@@ -1,0 +1,96 @@
+---
+
+name: 'NFC Docker'
+
+
+description: Docker workflow
+
+
+inputs:
+  DOCKER_BUILD_REGISTRY:
+    default: "ghcr.io"
+    description: Registry where build image will live
+    required: false
+  DOCKER_BUILD_IMAGE_NAME:
+    default: "${{ github.repository }}"
+    description: Docker image name for building image
+    required: false
+  DOCKER_BUILD_IMAGE_TAG:
+    default: "${{ github.sha }}"
+    description: Docker image tag for building image
+    required: false
+  DOCKER_FILE:
+    default: "dockerfile"
+    description: Path to the dockerfile
+    required: false
+  DOCKER_LABEL_ARTIFACTHUB_MAINTAINER:
+    default: '[{"name":"No Fuss Computing","email":"helpdesk@nofusscomputing.com"}]'
+    description: Artifact hub Maintainer
+    required: false
+  DOCKER_LABEL_ARTIFACTHUB_README:
+    default: 'https://raw.githubusercontent.com/${{ github.repository }}/development/README.md'
+    description: Artifact hub ReadMe
+    required: false
+  DOCKER_PUBLISH_REGISTRY:
+    default: "docker.io"
+    description: Registry where image will be published to
+    required: false
+  DOCKER_PUBLISH_IMAGE_NAME:
+    default: "${{ github.repository }}"
+    description: Docker image name for publishing the image
+    required: false
+  DOCKER_PUBLISH_USERNAME:
+    description: Publish Docker registry username
+    required: true
+  DOCKER_PUBLISH_PASSWORD:
+    description: Publish Docker registry password
+    required: true
+  DOCKER_SCAN_IMAGE_VULNERABILITY:
+    default: 'true'
+    description: Scan Image with Trivy
+    required: false
+  DOCKER_TAG_IMAGE_TAG_SOURCE:
+    default: "${{ github.sha }}"
+    description: Docker image tag Used for source Image to tag
+    required: false
+  DOCKER_TAG_IMAGE_TAG_LATEST:
+    default: 'true'
+    description: Create image with tag 'Latest'
+    required: false
+  DOCKER_TAG_IMAGE_TAG_SHA:
+    default: 'true'
+    description: Create image with tag that is the git commit
+    required: false
+
+
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: debug
+      shell: bash
+      run: |
+        echo ${{ github.action_path }}
+
+    - name: debug
+      shell: bash
+      run: |
+        ls -l ${{ github.action_path }}
+
+
+    # 
+    # Cant call actions within steps, must be from jobs.
+    #
+
+    # - name: Docker
+    #   uses: nofusscomputing/action_docker/.github/workflows/docker.yaml@genesis
+
+
+    # - name: Docker
+    #   uses: ${{ github.action_path }}/.github/workflows/docker.yaml
+
+
+branding:
+  icon: 'activity'
+  color: 'blue'
