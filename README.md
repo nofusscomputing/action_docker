@@ -1,4 +1,4 @@
-## No Fuss Computing - GH Action / Workflow for docker
+# No Fuss Computing - GH Action / Workflow for docker
 
 using the workflow requires a file be created at path `.github/workflow/docker.yaml`
 
