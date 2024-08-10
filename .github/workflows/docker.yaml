@@ -677,7 +677,6 @@ jobs:
       - docker-build
       - docker-scan-vulnerability
       - docker-reports
-      - docker-tagged
     runs-on: ubuntu-latest
     name: Publish
     steps:
