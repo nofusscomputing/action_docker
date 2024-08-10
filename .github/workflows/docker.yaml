@@ -146,6 +146,10 @@ jobs:
             --annotation "org.opencontainers.image.created=$(date '+%Y-%m-%dT%H:%M:%S%:z')" \
             --annotation "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
             --annotation "org.opencontainers.image.revision=${{ github.sha }}" \
+            \
+            --build-arg CI_PROJECT_URL=https://github.com/${{ github.repository }} \
+            --build-arg CI_COMMIT_SHA=${{ github.sha }} \
+            --build-arg CI_COMMIT_TAG=${{ github.ref_name }} \
           --push \
           --file ${{ inputs.DOCKER_FILE }} \
           --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
