@@ -742,7 +742,7 @@ jobs:
         run: |
           if [ "${{ github.ref_type}}" == 'tag'  ]; then
 
-            MANIFEST_TAG=${{ github.ref_name }};
+            MANIFEST_TAG=${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }};
           
           else
 
