@@ -740,7 +740,17 @@ jobs:
       - name: Fetch Manifest digest ${{ github.ref_name }}
         id: image-digest
         run: |
-          echo "value-out=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ github.ref_name }} | cut -d '@' -f 2)" >> $GITHUB_OUTPUT
+          if [ "${{ github.ref_type}}" == 'tag'  ]; then
+
+            MANIFEST_TAG=${{ github.ref_name }}
+          
+          else
+
+            MANIFEST_TAG=${{ steps.tag-image.outputs.mutable_tag_name }}
+
+          fi
+
+          echo "value-out=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${MANIFEST_TAG} | cut -d '@' -f 2)" >> $GITHUB_OUTPUT
 
 
       - name: Attest ${{ github.ref_name }}
