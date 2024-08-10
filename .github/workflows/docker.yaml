@@ -611,9 +611,21 @@ jobs:
 
       - name: Create Image Tag 'latest'
         if: ${{ inputs.DOCKER_TAG_IMAGE_TAG_LATEST }}
+        shell: bash
         run: |
+
+          TAG_NAME=dev;
+
+          if [ "${{ github.ref_name }}" == 'master' ]; then
+
+            TAG_NAME=latest;
+
+          fi
+
+          echo "[Debug] TAG_NAME=${TAG_NAME}";
+
           docker buildx imagetools create ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
-            --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:latest;
+            --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${TAG_NAME};
 
 
 
@@ -742,9 +754,23 @@ jobs:
 
       - name: Tag Image with GIT 'latest'
         if: ${{ inputs.DOCKER_TAG_IMAGE_TAG_LATEST }}
+        id: tag-image
+        shell: bash
         run: |
+          TAG_NAME=dev;
+
+          if [ "${{ github.ref_name }}" == 'master' ]; then
+
+            TAG_NAME=latest;
+
+          fi
+
+          echo "[Debug] TAG_NAME=${TAG_NAME}";
+
+          echo "mutable_tag_name=${TAG_NAME}" > $GITHUB_OUTPUT
+
           docker buildx imagetools create ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
-            --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:latest;
+            --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${TAG_NAME};
 
 
       - name: Append GH Release Body
@@ -759,7 +785,7 @@ jobs:
 
             The following images were built and published:
 
-            - `docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:latest`
+            - `docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ steps.tag-image.outputs.mutable_tag_name }}`
             - `docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }}`
             - `docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ github.ref_name }}`
 
