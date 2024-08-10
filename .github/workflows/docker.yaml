@@ -742,13 +742,15 @@ jobs:
         run: |
           if [ "${{ github.ref_type}}" == 'tag'  ]; then
 
-            MANIFEST_TAG=${{ github.ref_name }}
+            MANIFEST_TAG=${{ github.ref_name }};
           
           else
 
-            MANIFEST_TAG=${{ steps.tag-image.outputs.mutable_tag_name }}
+            MANIFEST_TAG=${{ steps.tag-image.outputs.mutable_tag_name }};
 
-          fi
+          fi;
+
+          echo "[Debug] MANIFEST_TAG=${MANIFEST_TAG}";
 
           echo "value-out=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${MANIFEST_TAG} | cut -d '@' -f 2)" >> $GITHUB_OUTPUT
 
