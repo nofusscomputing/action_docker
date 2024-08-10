@@ -725,9 +725,9 @@ jobs:
             --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
 
 
-      - name: Fetch image ${{ github.ref_name }}
+      - name: Fetch image ${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }}
         run: |
-          docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ github.ref_name }} >> /dev/null;
+          docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} >> /dev/null;
 
 
       - name: Fetch Manifest digest ${{ github.ref_name }}
