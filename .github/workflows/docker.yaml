@@ -668,7 +668,11 @@ jobs:
 
 
   docker-publish:
-    if: ${{ github.ref_type == 'tag' }}
+    if: ${{(
+        github.ref_type == 'tag'
+          ||
+        github.ref_name == 'development'
+      )}}
     needs: 
       - docker-build
       - docker-scan-vulnerability
@@ -688,10 +692,31 @@ jobs:
 
 
       - name: Tag Image with GIT Tag '${{ github.ref_name }}'
+        if: ${{ github.ref_type == 'tag' }}
         run: |
           docker buildx imagetools create ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
             --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ github.ref_name }} \
 
+
+      - name: Tag Image with GIT 'latest'
+        if: ${{ inputs.DOCKER_TAG_IMAGE_TAG_LATEST }}
+        id: tag-image
+        shell: bash
+        run: |
+          TAG_NAME=dev;
+
+          if [ "${{ github.ref_name }}" == 'master' ]; then
+
+            TAG_NAME=latest;
+
+          fi
+
+          echo "[Debug] TAG_NAME=${TAG_NAME}";
+
+          echo "mutable_tag_name=${TAG_NAME}" > $GITHUB_OUTPUT
+
+          docker buildx imagetools create ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
+            --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${TAG_NAME};
 
 
       - name: Tag Image with GIT commit '${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }}'
@@ -749,28 +774,6 @@ jobs:
         with:
           name: ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image-sbom-published
           path: ${{ steps.sbom-attest.outputs.bundle-path }}
-
-
-
-      - name: Tag Image with GIT 'latest'
-        if: ${{ inputs.DOCKER_TAG_IMAGE_TAG_LATEST }}
-        id: tag-image
-        shell: bash
-        run: |
-          TAG_NAME=dev;
-
-          if [ "${{ github.ref_name }}" == 'master' ]; then
-
-            TAG_NAME=latest;
-
-          fi
-
-          echo "[Debug] TAG_NAME=${TAG_NAME}";
-
-          echo "mutable_tag_name=${TAG_NAME}" > $GITHUB_OUTPUT
-
-          docker buildx imagetools create ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} \
-            --tag ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${TAG_NAME};
 
 
       - name: Append GH Release Body
