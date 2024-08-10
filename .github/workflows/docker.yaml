@@ -726,8 +726,15 @@ jobs:
 
 
       - name: Fetch image ${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }}
+        if: ${{ github.ref_type == 'tag' }}
         run: |
           docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }} >> /dev/null;
+
+
+      - name: Fetch image ${{ inputs.DOCKER_TAG_IMAGE_TAG_SOURCE }}
+        if: ${{ github.ref_type != 'tag' }}
+        run: |
+          docker pull ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}:${{ steps.tag-image.outputs.mutable_tag_name }} >> /dev/null;
 
 
       - name: Fetch Manifest digest ${{ github.ref_name }}
