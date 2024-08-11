@@ -338,7 +338,7 @@ jobs:
         run: |
           echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
 
-          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] || [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
+          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
 
             not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
 
@@ -394,7 +394,7 @@ jobs:
         run: |
           echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
 
-          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] || [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
+          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
 
             not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
 
