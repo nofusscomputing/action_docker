@@ -665,7 +665,7 @@ jobs:
           echo "$content" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - uses: jwalton/gh-find-current-pr@v1
+      - uses: jwalton/gh-find-current-pr@89ee5799558265a1e0e31fab792ebb4ee91c016b    #v1.3.3
         id: finder
 
       - name: Comment scan results on PR
