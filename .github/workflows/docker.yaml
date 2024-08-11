@@ -336,7 +336,7 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          if [ "$(jq -r '.Results')" ]; then
+          if [ "$(jq -r '.Results' scan-results.json)" ]; then
 
             not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
 
@@ -388,7 +388,7 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          if [ "$(jq -r '.Results')" ]; then
+          if [ "$(jq -r '.Results' scan-results.json)" ]; then
 
             not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
 
