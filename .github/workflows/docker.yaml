@@ -665,7 +665,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           number: ${{ steps.finder.outputs.pr }}
-          header: Image Scan Results
+          header: Docker Image Scan Results
           message: |
             ${{ env.report }}
 
