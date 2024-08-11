@@ -671,8 +671,6 @@ jobs:
 
       - uses: jwalton/gh-find-current-pr@89ee5799558265a1e0e31fab792ebb4ee91c016b    #v1.3.3
         id: finder
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Comment scan results on PR
         if: ${{ inputs.DOCKER_SCAN_IMAGE_VULNERABILITY }}
