@@ -336,15 +336,17 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' image-scan-results.json)";
+          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
 
-          if [ "$(jq -r '.Results' image-scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' image-scan-results.json)" != '0' ]; then
+          not_empty="";
 
-            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' image-scan-results.json)";
+          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
 
-          else
+            if [ "$(jq -r '.Results[] | .Vulnerabilities' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results[] | .Vulnerabilities' scan-results.json)" != '0' ]; then
 
-            not_empty="";
+              not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
+
+            fi
 
           fi
 
@@ -392,15 +394,17 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' image-scan-results.json)";
+          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
 
-          if [ "$(jq -r '.Results' image-scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' image-scan-results.json)" != '0' ]; then
+          not_empty="";
 
-            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' image-scan-results.json)";
+          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
 
-          else
+            if [ "$(jq -r '.Results[] | .Vulnerabilities' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results[] | .Vulnerabilities' scan-results.json)" != '0' ]; then
 
-            not_empty="";
+              not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
+
+            fi
 
           fi
 
@@ -667,6 +671,8 @@ jobs:
 
       - uses: jwalton/gh-find-current-pr@89ee5799558265a1e0e31fab792ebb4ee91c016b    #v1.3.3
         id: finder
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Comment scan results on PR
         if: ${{ inputs.DOCKER_SCAN_IMAGE_VULNERABILITY }}
