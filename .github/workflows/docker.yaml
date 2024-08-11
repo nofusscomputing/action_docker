@@ -310,7 +310,7 @@ jobs:
         with:
           image-ref: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}'
           format: 'json'
-          output: 'scan-results.json'
+          output: 'image-scan-results.json'
           severity: 'LOW,MEDIUM,HIGH,CRITICAL'
           vuln-type: 'os,library'
           scanners: vuln
@@ -324,7 +324,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: container-scan-results-json
-          path: scan-results.json
+          path: image-scan-results.json
 
 
       - run: |
@@ -336,11 +336,11 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
+          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' image-scan-results.json)";
 
-          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
+          if [ "$(jq -r '.Results' image-scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' image-scan-results.json)" != '0' ]; then
 
-            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
+            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' image-scan-results.json)";
 
           else
 
@@ -360,7 +360,7 @@ jobs:
           "**OS:** _" + ( .Metadata.OS.Family // "" ) + " " + ( .Metadata.OS.Name // "" ) + "_",
           ""
           ] | join("\n")
-          ' scan-results.json > vulnerability-report.md
+          ' image-scan-results.json > vulnerability-report.md
 
           if [ "$not_empty" ]; then
             jq -r '
@@ -376,7 +376,7 @@ jobs:
             (.Results[] | .Vulnerabilities[] | select(hr(.Severity)) | to_md),
             ""
             ] | join("\n")
-            ' scan-results.json >> vulnerability-report.md
+            ' image-scan-results.json >> vulnerability-report.md
 
           else
 
@@ -392,11 +392,11 @@ jobs:
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
         run: |
-          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' scan-results.json)";
+          echo "[Debug] jq -r '.Results'=$(jq -r '.Results' image-scan-results.json)";
 
-          if [ "$(jq -r '.Results' scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' scan-results.json)" != '0' ]; then
+          if [ "$(jq -r '.Results' image-scan-results.json)" != 'null' ] && [ "0$(jq -r '.Results' image-scan-results.json)" != '0' ]; then
 
-            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' scan-results.json)";
+            not_empty="$(jq -r '.Results[] | .Vulnerabilities[]' image-scan-results.json)";
 
           else
 
@@ -416,7 +416,7 @@ jobs:
           "**OS:** _" + ( .Metadata.OS.Family // "" ) + " " + ( .Metadata.OS.Name // "" ) + "_",
           ""
           ] | join("\n")
-          ' scan-results.json > full-vulnerability-report.md
+          ' image-scan-results.json > full-vulnerability-report.md
 
           if [ "$not_empty" ]; then
             jq -r '
@@ -432,7 +432,7 @@ jobs:
             (.Results[] | .Vulnerabilities[] | select(.Severity) | to_md),
             ""
             ] | join("\n")
-            ' scan-results.json >> full-vulnerability-report.md
+            ' image-scan-results.json >> full-vulnerability-report.md
 
           else
 
