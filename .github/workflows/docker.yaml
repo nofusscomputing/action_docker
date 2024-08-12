@@ -142,11 +142,6 @@ jobs:
             --label "io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}" \
             --label 'io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}' \
             \
-            --annotation "org.opencontainers.image.description=a DESCRIPTION for multi-arch images" \
-            --annotation "org.opencontainers.image.created=$(date '+%Y-%m-%dT%H:%M:%S%:z')" \
-            --annotation "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --annotation "org.opencontainers.image.revision=${{ github.sha }}" \
-            \
             --build-arg CI_PROJECT_URL=https://github.com/${{ github.repository }} \
             --build-arg CI_COMMIT_SHA=${{ github.sha }} \
             --build-arg CI_COMMIT_TAG=${{ github.ref_name }} \
