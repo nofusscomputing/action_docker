@@ -74,6 +74,9 @@ on:
         description: Publish Docker registry username
         required: true
 
+env:
+  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2    # see https://github.com/nofusscomputing/action_python/issues/10
+
 
 permissions:
   pull-requests: write
