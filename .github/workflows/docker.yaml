@@ -193,7 +193,7 @@ jobs:
               ||
             github.ref_type == 'tag'
           }}
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v1.4.3
         id: image-attest
         with:
           subject-name: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}
@@ -770,7 +770,7 @@ jobs:
 
 
       - name: Attest ${{ github.ref_name }}
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v1.4.3
         id: image-attest
         with:
           subject-name: ${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}
