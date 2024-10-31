@@ -536,7 +536,7 @@ jobs:
             github.ref_type == 'tag'
           }}
         id: sbom-attest
-        uses: actions/attest-sbom@v1
+        uses: actions/attest-sbom@v1.4.1
         with:
           subject-name: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}'
           subject-digest: ${{ needs.docker-build.outputs.build-image-digest }}
@@ -793,7 +793,7 @@ jobs:
 
       - name: Generate SBOM Attestation (publish)
         id: sbom-attest
-        uses: actions/attest-sbom@v1
+        uses: actions/attest-sbom@v1.4.1
         with:
           subject-name: '${{ inputs.DOCKER_PUBLISH_REGISTRY }}/${{ inputs.DOCKER_PUBLISH_IMAGE_NAME }}'
           subject-digest: ${{ needs.docker-build.outputs.build-image-digest }}
