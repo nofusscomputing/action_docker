@@ -180,8 +180,8 @@ jobs:
         github.ref_type == 'tag'
       }})
     runs-on: ubuntu-latest
-    needs:
-      - docker-image-exists
+    # needs:
+    #   - docker-image-exists
     name: Build Image
     outputs:
       build-image-digest: ${{ steps.image-digest.outputs.value-out }}
