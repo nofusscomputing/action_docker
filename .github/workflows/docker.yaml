@@ -105,7 +105,7 @@ jobs:
         github.ref_type == 'tag'
       }})
     runs-on: ubuntu-latest
-    name: Build Image
+    name: Check if Image Exists
     outputs:
       result: ${{ steps.image_exists.conclusion }}  
       image: ${{ steps.image_exists.outputs.image }}
