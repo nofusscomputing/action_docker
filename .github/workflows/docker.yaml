@@ -96,79 +96,78 @@ permissions:
 
 jobs:
 
-
-  docker-image-exists:
-    if:
-      (${{
-        github.event.push
-          ||
-        github.ref_type == 'tag'
-      }})
-    runs-on: ubuntu-latest
-    name: Check if Image Exists
-    outputs:
-      result: ${{ steps.image_exists.conclusion }}  
-      image: ${{ steps.image_exists.outputs.image }}
-      tag: ${{ steps.image_exists.outputs.tag }}
-    continue-on-error: true
-    steps:
-
+  # causes CI to report failed
+  # docker-image-exists:
+  #   if:
+  #     (${{
+  #       github.event.push
+  #         ||
+  #       github.ref_type == 'tag'
+  #     }})
+  #   runs-on: ubuntu-latest
+  #   name: Check if Image Exists
+  #   outputs:
+  #     result_un_tagged: ${{ steps.image_exists.conclusion }}  
+  #     result_tagged: ${{ steps.image_exists_tagged.conclusion }}
+  #   continue-on-error: true
+  #   steps:
 
 
-      - name: Debug
-        run: |
-          echo "${{ github.event.pull_request.head.repo.full_name || github.repository }}";
-          echo "**************************";
-          echo "${{ github.event.pull_request.head.repo.full_name }}";
-          echo "**************************";
-          echo "${{ github.repository }}";
-          echo "**************************";
-          echo "${{ github.event.pull_request.head.repo }}";
-          echo "**************************";
-          echo "${{ github.event.push }}";
-          echo "**************************";
-          echo "${{ inputs.DOCKER_BUILD_IMAGE_NAME_NO_ORG }}";
-          echo "**************************";
 
-      # - uses: actions/checkout@v4
+  #     - name: Debug
+  #       run: |
+  #         echo "${{ github.event.pull_request.head.repo.full_name || github.repository }}";
+  #         echo "**************************";
+  #         echo "${{ github.event.pull_request.head.repo.full_name }}";
+  #         echo "**************************";
+  #         echo "${{ github.repository }}";
+  #         echo "**************************";
+  #         echo "${{ github.event.pull_request.head.repo }}";
+  #         echo "**************************";
+  #         echo "${{ github.event.push }}";
+  #         echo "**************************";
+  #         echo "${{ inputs.DOCKER_BUILD_IMAGE_NAME_NO_ORG }}";
+  #         echo "**************************";
 
-
-      - name: Check image exists
-        id: image_exists
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: 'centurion-erp'
-          login: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+  #     # - uses: actions/checkout@v4
 
 
-      - name: Check image exists (No)
-        if: success() || failure()
-        id: image_exists_no
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: 'centurion-erp'
-          login: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}112
+  #     - name: Check image exists
+  #       id: image_exists
+  #       uses: cloudposse/github-action-docker-image-exists@main
+  #       with:
+  #         registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
+  #         organization: "${{ github.event.repository.owner.login }}"
+  #         repository: 'centurion-erp'
+  #         login: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+  #         tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
 
 
-      - name: Debug
-        if: success() || failure()
-        run: |
-          echo "${{ steps.image_exists_no.conclusion }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.conclusion }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.outputs.image }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.outputs.tag }}";
-          echo "**************************";
+  #     - name: Check image exists (tagged)
+  #       id: image_exists_tagged
+  #       uses: cloudposse/github-action-docker-image-exists@main
+  #       with:
+  #         registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
+  #         organization: "${{ github.event.repository.owner.login }}"
+  #         repository: 'centurion-erp'
+  #         login: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+  #         tag: ${{ github.ref_name }}
+
+
+
+  #     - name: Debug
+  #       if: success() || failure()
+  #       run: |
+  #         echo "${{ steps.image_exists_no.conclusion }}";
+  #         echo "**************************";
+  #         echo "${{ steps.image_exists.conclusion }}";
+  #         echo "**************************";
+  #         echo "${{ steps.image_exists.outputs.image }}";
+  #         echo "**************************";
+  #         echo "${{ steps.image_exists.outputs.tag }}";
+  #         echo "**************************";
 
 
 
@@ -181,11 +180,17 @@ jobs:
         github.ref_type == 'tag'
       }})
     runs-on: ubuntu-latest
+    needs:
+      - docker-image-exists
     name: Build Image
     outputs:
       build-image-digest: ${{ steps.image-digest.outputs.value-out }}
     steps:
 
+
+      - name: Image
+        run: |
+          echo "The image already exists"
 
 
       - name: Debug
