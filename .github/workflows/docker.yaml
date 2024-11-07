@@ -96,6 +96,83 @@ permissions:
 
 jobs:
 
+
+  docker-image-exists:
+    if:
+      (${{
+        github.event.push
+          ||
+        github.ref_type == 'tag'
+      }})
+    runs-on: ubuntu-latest
+    name: Build Image
+    outputs:
+      result: ${{ steps.image_exists.conclusion }}  
+      image: ${{ steps.image_exists.outputs.image }}
+      tag: ${{ steps.image_exists.outputs.tag }}
+    continue-on-error: true
+    steps:
+
+
+
+      - name: Debug
+        run: |
+          echo "${{ github.event.pull_request.head.repo.full_name || github.repository }}";
+          echo "**************************";
+          echo "${{ github.event.pull_request.head.repo.full_name }}";
+          echo "**************************";
+          echo "${{ github.repository }}";
+          echo "**************************";
+          echo "${{ github.event.pull_request.head.repo }}";
+          echo "**************************";
+          echo "${{ github.event.push }}";
+          echo "**************************";
+          echo "${{ inputs.DOCKER_BUILD_IMAGE_NAME_NO_ORG }}";
+          echo "**************************";
+
+      # - uses: actions/checkout@v4
+
+
+      - name: Check image exists
+        id: image_exists
+        uses: cloudposse/github-action-docker-image-exists@main
+        with:
+          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
+          organization: "${{ github.event.repository.owner.login }}"
+          repository: 'centurion-erp'
+          login: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+
+
+      - name: Check image exists (No)
+        if: success() || failure()
+        id: image_exists_no
+        uses: cloudposse/github-action-docker-image-exists@main
+        with:
+          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
+          organization: "${{ github.event.repository.owner.login }}"
+          repository: 'centurion-erp'
+          login: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}112
+
+
+      - name: Debug
+        if: success() || failure()
+        run: |
+          echo "${{ steps.image_exists_no.conclusion }}";
+          echo "**************************";
+          echo "${{ steps.image_exists.conclusion }}";
+          echo "**************************";
+          echo "${{ steps.image_exists.outputs.image }}";
+          echo "**************************";
+          echo "${{ steps.image_exists.outputs.tag }}";
+          echo "**************************";
+
+
+
+
   docker-build:
     if:
       (${{
@@ -127,43 +204,6 @@ jobs:
           echo "**************************";
 
       - uses: actions/checkout@v4
-
-
-      - name: Check image exists
-        id: image_exists
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: 'centurion-erp'
-          login: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
-
-
-      - name: Check image exists (No)
-        id: image_exists_no
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: 'centurion-erp'
-          login: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}112
-
-
-      - name: Debug
-        run: |
-          echo "${{ steps.image_exists_no.conclusion }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.conclusion }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.outputs.image }}";
-          echo "**************************";
-          echo "${{ steps.image_exists.outputs.tag }}";
-          echo "**************************";
-
 
       - name: Log into registry ${{ inputs.DOCKER_BUILD_REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
