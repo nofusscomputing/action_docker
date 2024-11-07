@@ -141,9 +141,23 @@ jobs:
           tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
 
 
+      - name: Check image exists (No)
+        id: image_exists_no
+        uses: cloudposse/github-action-docker-image-exists@main
+        with:
+          registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
+          organization: "${{ github.event.repository.owner.login }}"
+          repository: 'centurion-erp-fail'
+          login: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+
+
       - name: Debug
         run: |
-          echo "${{ steps.image_exists.conclusion }}}";
+          echo "${{ steps.image_exists_no.conclusion }}";
+          echo "**************************";
+          echo "${{ steps.image_exists.conclusion }}";
           echo "**************************";
           echo "${{ steps.image_exists.outputs.image }}";
           echo "**************************";
