@@ -147,10 +147,10 @@ jobs:
         with:
           registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
           organization: "${{ github.event.repository.owner.login }}"
-          repository: 'centurion-erp-fail'
+          repository: 'centurion-erp'
           login: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+          tag: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}112
 
 
       - name: Debug
