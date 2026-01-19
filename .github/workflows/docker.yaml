@@ -356,7 +356,7 @@ jobs:
           (${{
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}'
           format: 'sarif'
@@ -393,7 +393,7 @@ jobs:
           (${{
             inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
           }})
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}'
           format: 'json'
@@ -571,7 +571,7 @@ jobs:
 
 
       - name: Scan Image
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: image
           format: cyclonedx
