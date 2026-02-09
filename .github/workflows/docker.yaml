@@ -213,6 +213,7 @@ jobs:
 
       - name: Download built artifact to dist/
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: Packages
           path: dist
