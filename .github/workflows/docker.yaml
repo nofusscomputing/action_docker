@@ -208,7 +208,7 @@ jobs:
           echo "${{ inputs.DOCKER_BUILD_IMAGE_NAME_NO_ORG }}";
           echo "**************************";
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1    # v7.0.1
 
 
       - name: Download built artifact to dist/
@@ -331,7 +331,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Vulnerability Scan
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1    # v7.0.1
 
 
       - name: Dummy Task
