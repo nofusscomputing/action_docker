@@ -212,7 +212,7 @@ jobs:
 
 
       - name: Download built artifact to dist/
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         continue-on-error: true
         with:
           name: Packages
@@ -647,7 +647,7 @@ jobs:
 
       - name: Fetch Scan Results
         if: inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: docker-vulnerability-report-full
 
@@ -720,7 +720,7 @@ jobs:
 
       - name: Fetch Vulnerability Report
         if: inputs.DOCKER_SCAN_IMAGE_VULNERABILITY
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: docker-vulnerability-report
 
@@ -853,7 +853,7 @@ jobs:
 
 
       - name: Download SBOM as a Github artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: trivy-sbom-report
 
@@ -907,7 +907,7 @@ jobs:
 
       - name: Fetch Image Attestation Artifact - ${{ inputs.DOCKER_PUBLISH_REGISTRY }}
         if: inputs.DOCKER_PUBLISH_REGISTRY != inputs.DOCKER_BUILD_REGISTRY
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image-published
           path: attestation-image/
@@ -921,7 +921,7 @@ jobs:
 
       - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_PUBLISH_REGISTRY }}
         if: inputs.DOCKER_PUBLISH_REGISTRY != inputs.DOCKER_BUILD_REGISTRY
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image-sbom-published
           path: attestation-sbom/
@@ -950,7 +950,7 @@ jobs:
 
 
       - name: Fetch Image Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image
           path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/
@@ -961,7 +961,7 @@ jobs:
 
 
       - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
         with:
           name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image-sbom
           path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/
