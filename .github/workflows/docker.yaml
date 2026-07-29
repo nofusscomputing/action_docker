@@ -205,6 +205,8 @@ jobs:
           echo "**************************";
           echo "${{ github.event.push }}";
           echo "**************************";
+          echo "${{ github.event_nam }}";
+          echo "**************************";
           echo "${{ inputs.DOCKER_BUILD_IMAGE_NAME_NO_ORG }}";
           echo "**************************";
 
@@ -320,7 +322,7 @@ jobs:
   docker-scan-vulnerability:
     if: >-
       (
-        github.event.push
+        github.event_name == 'push'
           ||
         github.ref_type == 'tag'
       )
@@ -538,7 +540,7 @@ jobs:
   docker-sbom:
     if: >-
       (
-        github.event.push
+        github.event_name == 'push'
           ||
         github.ref_type == 'tag'
       )
