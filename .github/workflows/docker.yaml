@@ -175,8 +175,6 @@ jobs:
   docker-build:
     if: >-
       (
-        github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-          ||
         github.event_name == 'push'
           ||
         github.ref_type == 'tag'
@@ -324,8 +322,6 @@ jobs:
   docker-scan-vulnerability:
     if: >-
       (
-        github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-          ||
         github.event_name == 'push'
           ||
         github.ref_type == 'tag'
@@ -461,8 +457,6 @@ jobs:
   docker-sbom:
     if: >-
       (
-        github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-          ||
         github.event_name == 'push'
           ||
         github.ref_type == 'tag'
@@ -636,8 +630,8 @@ jobs:
 
   docker-pr-comment:
     if: >-
-        github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-          ||
+        github.event_name != 'pull_request'
+          &&
         github.ref_type != 'tag'
     needs:
       - docker-scan-vulnerability
@@ -678,12 +672,12 @@ jobs:
   docker-publish:
     if: >-
       (
-        github.event_name != 'pull_request'
-          ||
         github.ref_type == 'tag'
           ||
         github.ref_name == 'development'
       )
+        &&
+      github.event_name != 'pull_request'
     needs: 
       - docker-build
       - docker-scan-vulnerability
