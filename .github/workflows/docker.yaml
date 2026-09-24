@@ -289,6 +289,14 @@ jobs:
           tags: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
 
 
+      - name: Attest build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6    # v4.2.2
+        with:
+          subject-name: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}
+          subject-digest: ${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+          push-to-registry: true
+
+
       # - name: Build and push
       #   uses: docker/build-push-action@v7
       #   with:
@@ -563,7 +571,34 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: Generate SBOM Attestation
+      # - name: Generate SBOM Attestation
+      #   # if: >-
+      #   #   (
+      #   #     github.ref_name == 'development'
+      #   #       ||
+      #   #     github.ref_name == 'master'
+      #   #       ||
+      #   #     github.ref_type == 'tag'
+      #   #   )
+      #   id: sbom-attest
+      #   uses: actions/attest-sbom@v1.4.1
+      #   with:
+      #     subject-name: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}'
+      #     subject-digest: ${{ needs.docker-build.outputs.build-image-digest }}
+      #     sbom-path: 'dependency-results.sbom.json'
+      #     push-to-registry: true
+
+
+      - name: Attest SBOM
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6    # v4.2.2
+        with:
+          subject-name: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}
+          subject-digest: ${{ needs.docker-build.outputs.build-image-digest }}
+          sbom-path: 'dependency-results.sbom.json'
+          push-to-registry: true
+
+
+      - name: Upload SBOM Attestation Artifact
         # if: >-
         #   (
         #     github.ref_name == 'development'
@@ -572,24 +607,6 @@ jobs:
         #       ||
         #     github.ref_type == 'tag'
         #   )
-        id: sbom-attest
-        uses: actions/attest-sbom@v1.4.1
-        with:
-          subject-name: '${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}'
-          subject-digest: ${{ needs.docker-build.outputs.build-image-digest }}
-          sbom-path: 'dependency-results.sbom.json'
-          push-to-registry: true
-
-
-      - name: Upload SBOM Attestation Artifact
-        if: >-
-          (
-            github.ref_name == 'development'
-              ||
-            github.ref_name == 'master'
-              ||
-            github.ref_type == 'tag'
-          )
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a    # v7.0.1
         with:
           name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image-sbom
