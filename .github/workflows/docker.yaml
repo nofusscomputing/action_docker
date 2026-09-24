@@ -229,28 +229,74 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: Setup BuildX
-        run: |
-          docker buildx create --name project-v3-builder;
-          docker buildx use project-v3-builder;
+      # - name: Setup BuildX
+      #   run: |
+      #     docker buildx create --name project-v3-builder;
+      #     docker buildx use project-v3-builder;
+
+
+      # - name: build image
+      #   run: |
+      #     docker buildx build --platform="linux/amd64,linux/arm64" . \
+      #       --label "org.opencontainers.image.created=$(date '+%Y-%m-%dT%H:%M:%S%:z')" \
+      #       --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+      #       --label "org.opencontainers.image.revision=${{ github.sha }}" \
+      #       \
+      #       --label "io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}" \
+      #       --label 'io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}' \
+      #       \
+      #       --build-arg CI_PROJECT_URL=https://github.com/${{ github.repository }} \
+      #       --build-arg CI_COMMIT_SHA=${{ github.sha }} \
+      #       --build-arg CI_COMMIT_TAG=${{ github.ref_name }} \
+      #     --push \
+      #     --file ${{ inputs.DOCKER_FILE }} \
+      #     --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
+
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1    # v4.4.0
+
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069    # v4.4.1
+
+
+      - name: set build timestamp
+        id: timestamp
+        run: echo "created=$(date '+%Y-%m-%dT%H:%M:%S%:z')" >> "$GITHUB_OUTPUT"
 
 
       - name: build image
-        run: |
-          docker buildx build --platform="linux/amd64,linux/arm64" . \
-            --label "org.opencontainers.image.created=$(date '+%Y-%m-%dT%H:%M:%S%:z')" \
-            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            \
-            --label "io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}" \
-            --label 'io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}' \
-            \
-            --build-arg CI_PROJECT_URL=https://github.com/${{ github.repository }} \
-            --build-arg CI_COMMIT_SHA=${{ github.sha }} \
-            --build-arg CI_COMMIT_TAG=${{ github.ref_name }} \
-          --push \
-          --file ${{ inputs.DOCKER_FILE }} \
-          --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc    # v7.4.0
+        with:
+          build-args: |
+            CI_PROJECT_URL=https://github.com/${{ github.repository }}
+            CI_COMMIT_SHA=${{ github.sha }}
+            CI_COMMIT_TAG=${{ github.ref_name }}
+          context: .
+          file: ${{ inputs.DOCKER_FILE }}
+          labels: |
+            org.opencontainers.image.created=${{ steps.timestamp.outputs.created }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}
+            io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}
+          platforms: linux/amd64,linux/arm64
+          provenance: true
+          push: true
+          sbom: true
+          tags: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+
+
+      # - name: Build and push
+      #   uses: docker/build-push-action@v7
+      #   with:
+      #     context: .
+      #     labels:
+      #       org.opencontainers.image.source: https://github.com/${{ github.repository }}
+      #     push: true
+      #     tags: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
+
 
 
       - name: Remove "Unknown" Image from Manifest - development branch
@@ -285,37 +331,37 @@ jobs:
           echo "value-out=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }} | cut -d '@' -f 2)" >> $GITHUB_OUTPUT
 
 
-      - name: Attest
-        if: >-
-          github.ref_name == 'development'
-            ||
-          github.ref_name == 'master'
-            ||
-          github.ref_type == 'tag'
-        uses: actions/attest-build-provenance@v1.4.3
-        id: image-attest
-        with:
-          subject-name: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}
-          subject-digest: ${{ steps.image-digest.outputs.value-out }}
-          push-to-registry: true
+      # - name: Attest
+      #   if: >-
+      #     github.ref_name == 'development'
+      #       ||
+      #     github.ref_name == 'master'
+      #       ||
+      #     github.ref_type == 'tag'
+      #   uses: actions/attest-build-provenance@v1.4.3
+      #   id: image-attest
+      #   with:
+      #     subject-name: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}
+      #     subject-digest: ${{ steps.image-digest.outputs.value-out }}
+      #     push-to-registry: true
 
 
-      - name: Upload Image Attestation Artifact
-        if: >-
-          github.ref_name == 'development'
-            ||
-          github.ref_name == 'master'
-            ||
-          github.ref_type == 'tag'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a    # v7.0.1
-        with:
-          name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image
-          path: ${{ steps.image-attest.outputs.bundle-path }}
+      # - name: Upload Image Attestation Artifact
+      #   if: >-
+      #     github.ref_name == 'development'
+      #       ||
+      #     github.ref_name == 'master'
+      #       ||
+      #     github.ref_type == 'tag'
+      #   uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a    # v7.0.1
+      #   with:
+      #     name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image
+      #     path: ${{ steps.image-attest.outputs.bundle-path }}
 
 
-      - name: Cleanup BuildX
-        run: |
-          docker buildx rm project-v3-builder;
+      # - name: Cleanup BuildX
+      #   run: |
+      #     docker buildx rm project-v3-builder;
 
 
 
