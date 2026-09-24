@@ -282,7 +282,7 @@ jobs:
             io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}
             io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}
           platforms: linux/amd64,linux/arm64
-          provenance: true
+          provenance: mode=max
           push: true
           sbom: true
           tags: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
@@ -299,25 +299,25 @@ jobs:
 
 
 
-      - name: Remove "Unknown" Image from Manifest - development branch
-        if: ${{ github.ref_name == 'development' }}
-        run: |
+      # - name: Remove "Unknown" Image from Manifest - development branch
+      #   if: ${{ github.ref_name == 'development' }}
+      #   run: |
 
-          DOCKER_MULTI_ARCH_IMAGES=$(docker buildx imagetools inspect "${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}" --format "{{ range .Manifest.Manifests }}{{ if ne (print .Platform) \"&{unknown unknown  [] }\" }}${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}@{{ println .Digest }}{{end}} {{end}}");
+      #     DOCKER_MULTI_ARCH_IMAGES=$(docker buildx imagetools inspect "${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}" --format "{{ range .Manifest.Manifests }}{{ if ne (print .Platform) \"&{unknown unknown  [] }\" }}${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}@{{ println .Digest }}{{end}} {{end}}");
 
-          docker buildx imagetools create $DOCKER_MULTI_ARCH_IMAGES \
-            --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }} \
-            --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:dev;
+      #     docker buildx imagetools create $DOCKER_MULTI_ARCH_IMAGES \
+      #       --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }} \
+      #       --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:dev;
 
 
-      - name: Remove "Unknown" Image from Manifest - other branches
-        if: ${{ github.ref_name != 'development' }}
-        run: |
+      # - name: Remove "Unknown" Image from Manifest - other branches
+      #   if: ${{ github.ref_name != 'development' }}
+      #   run: |
 
-          DOCKER_MULTI_ARCH_IMAGES=$(docker buildx imagetools inspect "${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}" --format "{{ range .Manifest.Manifests }}{{ if ne (print .Platform) \"&{unknown unknown  [] }\" }}${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}@{{ println .Digest }}{{end}} {{end}}");
+      #     DOCKER_MULTI_ARCH_IMAGES=$(docker buildx imagetools inspect "${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}" --format "{{ range .Manifest.Manifests }}{{ if ne (print .Platform) \"&{unknown unknown  [] }\" }}${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}@{{ println .Digest }}{{end}} {{end}}");
 
-          docker buildx imagetools create $DOCKER_MULTI_ARCH_IMAGES \
-            --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
+      #     docker buildx imagetools create $DOCKER_MULTI_ARCH_IMAGES \
+      #       --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
 
 
       - name: Fetch image
