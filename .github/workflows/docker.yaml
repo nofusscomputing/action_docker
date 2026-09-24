@@ -282,9 +282,10 @@ jobs:
             io.artifacthub.package.readme-url=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_README }}
             io.artifacthub.package.maintainers=${{ inputs.DOCKER_LABEL_ARTIFACTHUB_MAINTAINER }}
           platforms: linux/amd64,linux/arm64
-          provenance: mode=max
+          # provenance: mode=max
           push: true
-          sbom: true
+          # sbom: true
+          sbom: false
           tags: ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }}
 
 
@@ -320,9 +321,9 @@ jobs:
       #       --tag ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }};
 
 
-      - name: Fetch image
-        run: |
-          docker pull ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }} >> /dev/null;
+      # - name: Fetch image
+      #   run: |
+      #     docker pull ${{ inputs.DOCKER_BUILD_REGISTRY }}/${{ inputs.DOCKER_BUILD_IMAGE_NAME }}:${{ inputs.DOCKER_BUILD_IMAGE_TAG }} >> /dev/null;
 
 
       - name: Fetch Manifest digest
@@ -547,14 +548,14 @@ jobs:
 
 
       - name: Log into registry ${{ inputs.DOCKER_BUILD_REGISTRY }}
-        if: >-
-          (
-            github.ref_name == 'development'
-              ||
-            github.ref_name == 'master'
-              ||
-            github.ref_type == 'tag'
-          )
+        # if: >-
+        #   (
+        #     github.ref_name == 'development'
+        #       ||
+        #     github.ref_name == 'master'
+        #       ||
+        #     github.ref_type == 'tag'
+        #   )
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ${{ inputs.DOCKER_BUILD_REGISTRY }}
@@ -563,14 +564,14 @@ jobs:
 
 
       - name: Generate SBOM Attestation
-        if: >-
-          (
-            github.ref_name == 'development'
-              ||
-            github.ref_name == 'master'
-              ||
-            github.ref_type == 'tag'
-          )
+        # if: >-
+        #   (
+        #     github.ref_name == 'development'
+        #       ||
+        #     github.ref_name == 'master'
+        #       ||
+        #     github.ref_type == 'tag'
+        #   )
         id: sbom-attest
         uses: actions/attest-sbom@v1.4.1
         with:
