@@ -925,7 +925,7 @@ jobs:
       - 
         if: inputs.DOCKER_PUBLISH_REGISTRY != inputs.DOCKER_BUILD_REGISTRY
         run: |
-          mv attestation-image/attestation.jsonl ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image.jsonl
+          mv attestation-image/attestation.json ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image.json
 
 
       - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_PUBLISH_REGISTRY }}
@@ -938,7 +938,7 @@ jobs:
 
       - if: inputs.DOCKER_PUBLISH_REGISTRY != inputs.DOCKER_BUILD_REGISTRY
         run: |
-          mv attestation-sbom/attestation.jsonl ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-sbom.jsonl
+          mv attestation-sbom/attestation.json ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-sbom.json
 
 
       - if: inputs.DOCKER_PUBLISH_REGISTRY != inputs.DOCKER_BUILD_REGISTRY
@@ -954,8 +954,8 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: true
           files: |
-            ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image.jsonl
-            ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-sbom.jsonl
+            ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-image.json
+            ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-sbom.json
 
 
       - name: Fetch Image Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
@@ -966,7 +966,7 @@ jobs:
 
 
       - run: |
-          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/attestation.jsonl ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.jsonl
+          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.json
 
 
       - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
@@ -977,7 +977,7 @@ jobs:
 
 
       - run: |
-          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/attestation.jsonl ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.jsonl
+          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.json
 
 
       - run: |
@@ -992,8 +992,8 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: true
           files: |
-            ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.jsonl
-            ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.jsonl
+            ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.json
+            ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.json
 
 
 
