@@ -84,6 +84,7 @@ env:
 
 
 permissions:
+  artifact-metadata: write
   pull-requests: write
   contents: write
   actions: read
