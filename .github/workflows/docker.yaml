@@ -959,26 +959,26 @@ jobs:
             ${{ inputs.DOCKER_PUBLISH_REGISTRY }}-attestation-sbom.json
 
 
-      - name: Fetch Image Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
-        with:
-          name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image
-          path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/
+      # - name: Fetch Image Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
+      #   uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
+      #   with:
+      #     name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image
+      #     path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/
 
 
-      - run: |
-          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.json
+      # - run: |
+      #     mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image.json
 
 
-      - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
-        with:
-          name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image-sbom
-          path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/
+      # - name: Fetch SBOM Attestation Artifact - ${{ inputs.DOCKER_BUILD_REGISTRY }}
+      #   uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # V8.0.1
+      #   with:
+      #     name: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-image-sbom
+      #     path: ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/
 
 
-      - run: |
-          mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.json
+      # - run: |
+      #     mv ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom/attestation.json ${{ inputs.DOCKER_BUILD_REGISTRY }}-attestation-sbom.json
 
 
       - run: |
